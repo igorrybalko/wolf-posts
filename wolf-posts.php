@@ -47,9 +47,9 @@ class WolfPosts extends WP_Widget
         $titleFieldId = $this->get_field_id("title");
         $titleFieldName = $this->get_field_name("title");
         echo '<p><label for="' . $titleFieldId . '">Title:</label><br>';
-        echo '<input id="' . $titleFieldId . '" type="text" name="' 
-        . $titleFieldName . '" value="' . $title . '"></p>';
-    
+        echo '<input id="' . $titleFieldId . '" type="text" name="'
+            . $titleFieldName . '" value="' . $title . '"></p>';
+
         $catFieldId = $this->get_field_id("category");
         $catFieldName = $this->get_field_name("category");
         echo '<p><label for="' . $catFieldId . '">Category:</label><br>';
@@ -59,7 +59,7 @@ class WolfPosts extends WP_Widget
         <option value="" <?php selected( $category, '' )?>>All</option>
         <?php  foreach(get_categories() as $v){ ?>
 
-            <option value="<?= $v->cat_ID ?>" <?php selected( $category, $v->cat_ID )?>><?= $v->cat_name ?></option>
+            <option value="<?php echo $v->cat_ID ?>" <?php selected( $category, $v->cat_ID )?>><?php echo $v->cat_name ?></option>
 
         <?php  }
         echo '</select></p>';
@@ -68,11 +68,12 @@ class WolfPosts extends WP_Widget
         $quantityFieldName = $this->get_field_name("quantity");
         echo '<p><label for="' . $quantityFieldId . '">Quantity:</label><br>';
         echo '<input id="' . $quantityFieldId . '" type="number" name="' .
-        $quantityFieldName . '" value="' . $quantity . '"></p>';
+            $quantityFieldName . '" value="' . $quantity . '"></p>';
 
         $listFiles = scandir(__DIR__ . '/tpl');
         $listTpls = array_map(function($el){
             preg_match('/^tpl_(.*)\.php$/', $el, $matches);
+            if(isset($matches[1]))
                 return $matches[1];
         }, $listFiles);
         $listTpls = array_filter($listTpls, function($el){
@@ -84,8 +85,8 @@ class WolfPosts extends WP_Widget
         echo '<p><label for="' . $tplFieldId . '">Template:</label><br>';
         echo '<select name="' . $tplFieldName . '">';
         foreach($listTpls as $tplName){ ?>
-            <option value="<?= $tplName ?>" <?php selected( $tpl, $tplName )?>><?= $tplName ?></option>
-       <?php }
+            <option value="<?php echo $tplName ?>" <?php selected( $tpl, $tplName )?>><?php echo $tplName ?></option>
+        <?php }
 
         echo '</select></p>';
 
@@ -121,10 +122,10 @@ class WolfPosts extends WP_Widget
         }
 
         $posts = get_posts([
-                'category' => $catId,
-                'numberposts' => $quantity,
-                'orderby' => $orderby,
-                'order' => $order
+            'category' => $catId,
+            'numberposts' => $quantity,
+            'orderby' => $orderby,
+            'order' => $order
         ]);
 
         require_once( __DIR__ . '/tpl/tpl_' . $tpl . '.php');
