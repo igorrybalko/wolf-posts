@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Wolf posts
-Plugin URI: http://wdss.com.ua
+Plugin URI: http://wolfweb.com.ua
 Description: Posts list
-Version: 1.0
+Version: 1.0.1
 Author: Rybalko Igor
-Author URI: http://wdss.com.ua
+Author URI: http://wolfweb.com.ua
 */
 
 /*  Copyright 2017  Rybalko Igor  (email : igorrybalko2009@gmail.com)
@@ -27,7 +27,7 @@ Author URI: http://wdss.com.ua
 class WolfPosts extends WP_Widget
 {
     public function __construct() {
-        parent::__construct("Posts", "Posts Widget",
+        parent::__construct("Posts", "Wolf-posts Widget",
             array("description" => "Show list posts"));
     }
 
@@ -36,6 +36,7 @@ class WolfPosts extends WP_Widget
         $title = $category = "";
         $quantity = 4;
         $tpl = 'default';
+        $orderby = 'date';
 
         foreach($instance as $k => $v){
             if($v){
@@ -77,6 +78,7 @@ class WolfPosts extends WP_Widget
         $listTpls = array_filter($listTpls, function($el){
             return $el;
         });
+
         $tplFieldId = $this->get_field_id("tpl");
         $tplFieldName = $this->get_field_name("tpl");
         echo '<p><label for="' . $tplFieldId . '">Template:</label><br>';
@@ -86,6 +88,14 @@ class WolfPosts extends WP_Widget
        <?php }
 
         echo '</select></p>';
+
+        $tplFieldId = $this->get_field_id("orderby");
+        $tplFieldName = $this->get_field_name("orderby");
+        echo '<p><label for="' . $tplFieldId . '">Order by:</label><br>';
+        echo '<select name="' . $tplFieldName . '">';
+        echo '<option value="date" ' .  selected( $orderby, 'date' ) . '>Date</option>';
+        echo '<option value="title" ' . selected( $orderby, 'title' ) . '>Name</option>';
+        echo '</select></p>';
     }
 
     public function update($newInstance, $oldInstance) {
@@ -94,6 +104,7 @@ class WolfPosts extends WP_Widget
         $values["quantity"] = abs(intval($newInstance["quantity"]));
         $values["category"] = htmlentities($newInstance["category"]);
         $values["tpl"] = htmlentities($newInstance["tpl"]);
+        $values["orderby"] = htmlentities($newInstance["orderby"]);
         return $values;
     }
 
@@ -102,9 +113,18 @@ class WolfPosts extends WP_Widget
         $quantity = $instance["quantity"];
         $catId = $instance["category"];
         $tpl = $instance["tpl"];
+        $orderby = $instance["orderby"];
+        $order = 'DESC';
+
+        if($orderby == 'title'){
+            $order = 'ASC';
+        }
+
         $posts = get_posts([
                 'category' => $catId,
                 'numberposts' => $quantity,
+                'orderby' => $orderby,
+                'order' => $order
         ]);
 
         require_once( __DIR__ . '/tpl/tpl_' . $tpl . '.php');
