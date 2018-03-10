@@ -3,7 +3,7 @@
 Plugin Name: Wolf posts
 Plugin URI: http://wolfweb.com.ua
 Description: Posts list
-Version: 1.0.1
+Version: 1.0.2
 Author: Rybalko Igor
 Author URI: http://wolfweb.com.ua
 */
@@ -27,7 +27,7 @@ Author URI: http://wolfweb.com.ua
 class WolfPosts extends WP_Widget
 {
     public function __construct() {
-        parent::__construct("Posts", "Wolf-posts Widget",
+        parent::__construct("wolf_posts", "Wolf-posts",
             array("description" => "Show list posts"));
     }
 
